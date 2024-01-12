@@ -10,8 +10,8 @@ class ArgumentsSpring2017:
         '/cluster/projects/nn9490k/ROHO800/STORAGE/ROHO800_hindcast_2007_2019_v2bn/roho800_v2bn_his/roho800_his_0526.nc',
     )
     roho800_files: tuple = (
-        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/2_2017_01_15-2019_12_27_v2bn/his_0003.nc',
-        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/2_2017_01_15-2019_12_27_v2bn/his_0004.nc',
+        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27/his_0003.nc',
+        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27/his_0004.nc',
     )
     roho160_files: tuple = (
         '/cluster/projects/nn9297k/shmiak/roho160_data/1_2017-01-15_to_2019-07-16/roho160_his_0002.nc',
@@ -32,8 +32,8 @@ class ArgumentsSpring2018:
         '/cluster/projects/nn9490k/ROHO800/STORAGE/ROHO800_hindcast_2007_2019_v2bn/roho800_v2bn_his/roho800_his_0578.nc',
     )
     roho800_files: tuple = (
-        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/2_2017_01_15-2019_12_27_v2bn/his_0055.nc',
-        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/2_2017_01_15-2019_12_27_v2bn/his_0056.nc',
+        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27/his_0055.nc',
+        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27/his_0056.nc',
     )
     roho160_files: tuple = (
         '/cluster/projects/nn9297k/shmiak/roho160_data/1_2017-01-15_to_2019-07-16/roho160_his_0039.nc',
@@ -54,8 +54,8 @@ class ArgumentsSpring2019:
         '/cluster/projects/nn9490k/ROHO800/STORAGE/ROHO800_hindcast_2007_2019_v2bn/roho800_v2bn_his/roho800_his_0630.nc',
     )
     roho800_files: tuple = (
-        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/2_2017_01_15-2019_12_27_v2bn/his_0107.nc',
-        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/2_2017_01_15-2019_12_27_v2bn/his_0108.nc',
+        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27/his_0107.nc',
+        '/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27/his_0108.nc',
     )
     roho160_files: tuple = (
         '/cluster/projects/nn9297k/shmiak/roho160_data/1_2017-01-15_to_2019-07-16/roho160_his_0075.nc',
