@@ -1,5 +1,8 @@
 """
-salloc --nodes=1 --time=02:00:00 --qos=short --account=nn9297k
+It regrids roho160 output to the roho800 domain.
+roho800 domain is larger, so it extrapolates towards the boundaries.
+To run the interactive job (FRAM):
+`salloc --nodes=1 --time=02:00:00 --qos=short --account=nn9297k`
 """
 
 import re
@@ -46,6 +49,10 @@ def fill_variables():
     variables.append(RomsVariable("v", "lon_v", "lat_v", "eta_v", "xi_v", "mask_v", "s_rho"))
     variables.append(RomsVariable("vbar", "lon_v", "lat_v", "eta_v", "xi_v", "mask_v", None))
     variables.append(RomsVariable("zeta", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", None))
+    variables.append(RomsVariable("w", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
+    variables.append(RomsVariable("AKs", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
+    variables.append(RomsVariable("AKt", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
+    variables.append(RomsVariable("AKv", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
     return variables
 
 
@@ -91,9 +98,14 @@ def f(ds_grid, file_names):
             except ValueError:
                 da = da.transpose("ocean_time", var.eta_name, var.xi_name)
                 ds_dict[var.name] = (["ocean_time", var.eta_name, var.xi_name], da.values)
-        xr.Dataset(ds_dict).to_netcdf(
+        xr.Dataset(
+            data_vars=ds_dict,
+            coords=dict(
+                ocean_time=ds_data.ocean_time.values,
+            ),
+        ).to_netcdf(
             f'/cluster/projects/nn9297k/shmiak/roho800_data/interpolated_from_roho160_phys/his_{i:03d}from_roho160.nc'
-            )
+        )
         print(f"File {i:03d}_from_roho160.nc saved")
 
 
@@ -108,14 +120,14 @@ def split_list(input_list, num_splits):
 
 
 if __name__ == "__main__":
-    num_splits = 3
+    num_splits = 5
     file_names = sorted(glob.glob(
-        "/cluster/projects/nn9297k/shmiak/roho160_data/1_2017-01-15_to_2019-07-16/*his*.nc"
-    ))
+        "/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/*his*.nc"
+    ))[:50]
     file_names_splits = split_list(file_names, num_splits)
 
-    ds_roho800_grid = xr.open_dataset('/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc')
-    f(ds_roho800_grid, file_names[3:6])
+    # ds_roho800_grid = xr.open_dataset('/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc')
+    # f(ds_roho800_grid, file_names)
 
     def wrapper(x):
         ds_roho800_grid = xr.open_dataset('/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc')
