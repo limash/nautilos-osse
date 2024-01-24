@@ -53,6 +53,7 @@ def fill_variables():
     variables.append(RomsVariable("AKs", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
     variables.append(RomsVariable("AKt", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
     variables.append(RomsVariable("AKv", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_w"))
+    variables.append(RomsVariable("rho", "lon_rho", "lat_rho", "eta_rho", "xi_rho", "mask_rho", "s_rho"))
     return variables
 
 
@@ -104,7 +105,7 @@ def f(ds_grid, file_names):
                 ocean_time=ds_data.ocean_time.values,
             ),
         ).to_netcdf(
-            f'/cluster/projects/nn9297k/shmiak/roho800_data/interpolated_from_roho160_phys/his_{i:03d}from_roho160.nc'
+            f'/cluster/projects/nn9297k/shmiak/roho800_data/interpolated_from_roho160_phys/his_{i:03d}_from_roho160.nc'
         )
         print(f"File {i:03d}_from_roho160.nc saved")
 

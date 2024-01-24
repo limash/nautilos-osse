@@ -35,7 +35,8 @@ YEAR2019PATH = "/cluster/projects/nn9490k/ROHO800/STORAGE/ROHO800_hindcast_2007_
 TIME2019 = (2019, 1, 15)
 DAYS_1948_2019 = 25947
 
-PHYSPATH = "/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27"
+PHYSPATH_BASE = "/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27"
+PHYSPATH_ORIGIN = "/cluster/projects/nn9297k/shmiak/roho800_data/interpolated_from_roho160_phys"
 
 VARS_TO_UPDATE = (
     "AKs", "AKt", "AKv",
@@ -163,7 +164,7 @@ def run_roms(directory_path):
     process.communicate()
 
 
-def main(init_time_tuple, init_av_file_path, days_since_1948):
+def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
     # Stage 1: run ROMS from roho800original average output
     #
     # 1. create a folder for the first run, copy files to it :
@@ -200,7 +201,7 @@ def main(init_time_tuple, init_av_file_path, days_since_1948):
     time_cftime = time_cftime + timedelta(days=3)
     prev_roms_output = os.path.join(prev_dir_path, "roho800_his_0001.nc")
 
-    create_init_gen = create_init(directory_path, prev_roms_output, time_cftime, PHYSPATH)
+    create_init_gen = create_init(directory_path, prev_roms_output, time_cftime, physpath)
     init_name = next(create_init_gen)
 
     change_the_line(
@@ -247,4 +248,4 @@ def main(init_time_tuple, init_av_file_path, days_since_1948):
 
 
 if __name__ == "__main__":
-    main(TIME2019, YEAR2019PATH, DAYS_1948_2019)
+    main(TIME2017, YEAR2017PATH, DAYS_1948_2017, PHYSPATH_ORIGIN)
