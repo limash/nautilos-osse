@@ -142,7 +142,17 @@ def g(ds_grid, file_names):
         xr.Dataset(
             data_vars=ds_dict,
             coords=dict(
-                ocean_time=ds_data.ocean_time.values,
+                s_rho=(["s_rho"], ds_data.s_rho.values),
+                s_w=(["s_w"], ds_data.s_w.values),
+                ocean_time=(["ocean_time"], ds_data.ocean_time.values),
+                lon_rho=(["eta_rho", "xi_rho"], ds_data.lon_rho.values),
+                lat_rho=(["eta_rho", "xi_rho"], ds_data.lat_rho.values),
+                lon_u=(["eta_u", "xi_u"], ds_data.lon_u.values),
+                lat_u=(["eta_u", "xi_u"], ds_data.lat_u.values),
+                lon_v=(["eta_v", "xi_v"], ds_data.lon_v.values),
+                lat_v=(["eta_v", "xi_v"], ds_data.lat_v.values),
+                lon_psi=(["eta_psi", "xi_psi"], ds_data.lon_psi.values),
+                lat_psi=(["eta_psi", "xi_psi"], ds_data.lat_psi.values),
             ),
         ).to_netcdf(
             f'/cluster/projects/nn9297k/shmiak/roho160_data/3_2017-01-15_to_2019-07-16_with_AKx_no_lakes/roho160_his_{i:03d}.nc'
