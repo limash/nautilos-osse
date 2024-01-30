@@ -2,7 +2,7 @@
 Runs a roms model (romsM) sequentially
 using phys data from another roms output (PHYSPATH)
 and biogeo data from the previous step of the current run
-It need `FILES` to be in the same folder
+It needs `FILES` to be in the same folder
 """
 import os
 import glob

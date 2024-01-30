@@ -1,6 +1,7 @@
 """
-It regrids roho160 output to the roho800 domain.
+It regrids roho160 output to the roho800 domain (f function).
 roho800 domain is larger, so it extrapolates towards the boundaries.
+Also erases lakes from the roms output (g function)
 To run the interactive job (FRAM):
 `salloc --nodes=1 --time=02:00:00 --qos=short --account=nn9297k`
 """
@@ -83,7 +84,7 @@ def get_slices(steps: int, num: int):
 
 def f(ds_grid, file_names):
     """
-    Regredding
+    Regridding
     """
     roms_variables = fill_variables()
     pattern = re.compile(r'\d+')
@@ -129,9 +130,9 @@ def g(ds_grid, file_names):
         ds_data = ds_data.sel(ocean_time=ds_data['ocean_time'].dt.hour == 0)
         ds_dict = {}
         for var in roms_variables:
-            da =  ds_data[var.name] / ds_grid[var.mask_name]
+            da =  ds_data[var.name] / ds_grid[var.mask_name].astype(np.float32)
+            print(f"Variable {var.name} processed.")
             da.values[np.isinf(da.values)] = np.nan
-            da.values = da.values.astype(np.float32)
             try:
                 da = da.transpose("ocean_time", var.s_name, var.eta_name, var.xi_name)
                 ds_dict[var.name] = (["ocean_time", var.s_name, var.eta_name, var.xi_name], da.values)
@@ -160,13 +161,19 @@ def split_list(input_list, num_splits):
 
 
 if __name__ == "__main__":
-    num_splits = 5
+    # num splits defines the number of processes
+    num_splits = 2
+
+    # memory limit: 2 processes max
     file_names = sorted(glob.glob(
         "/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/*his*.nc"
-    ))[:50]
+    ))[:10]
+
+    # memory limit: 5 processes max
     # file_names = sorted(glob.glob(
     #     "/cluster/projects/nn9297k/shmiak/roho160_data/3_2017-01-15_to_2019-07-16_with_AKx_no_lakes/*his*.nc"
-    # ))[:50]
+    # ))[:10]
+
     file_names_splits = split_list(file_names, num_splits)
 
     def wrapper_erase_lakes(x):
