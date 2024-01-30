@@ -82,6 +82,9 @@ def get_slices(steps: int, num: int):
 
 
 def f(ds_grid, file_names):
+    """
+    Regredding
+    """
     roms_variables = fill_variables()
     pattern = re.compile(r'\d+')
     for file_name in file_names:
@@ -110,6 +113,42 @@ def f(ds_grid, file_names):
         print(f"File {i:03d}_from_roho160.nc saved")
 
 
+def g(ds_grid, file_names):
+    """
+    Lakes erasing, it uses a new grid without lakes to update the data;
+    also it takes data only at the midnight
+    """
+    roms_variables = fill_variables()
+    pattern = re.compile(r'\d+')
+    for file_name in file_names:
+        matches = pattern.findall(file_name)
+        numbers = [int(match) for match in matches]
+        i = numbers[-1]
+
+        ds_data = xr.open_dataset(file_name)
+        ds_data = ds_data.sel(ocean_time=ds_data['ocean_time'].dt.hour == 0)
+        ds_dict = {}
+        for var in roms_variables:
+            da =  ds_data[var.name] / ds_grid[var.mask_name]
+            da.values[np.isinf(da.values)] = np.nan
+            da.values = da.values.astype(np.float32)
+            try:
+                da = da.transpose("ocean_time", var.s_name, var.eta_name, var.xi_name)
+                ds_dict[var.name] = (["ocean_time", var.s_name, var.eta_name, var.xi_name], da.values)
+            except ValueError:
+                da = da.transpose("ocean_time", var.eta_name, var.xi_name)
+                ds_dict[var.name] = (["ocean_time", var.eta_name, var.xi_name], da.values)
+        xr.Dataset(
+            data_vars=ds_dict,
+            coords=dict(
+                ocean_time=ds_data.ocean_time.values,
+            ),
+        ).to_netcdf(
+            f'/cluster/projects/nn9297k/shmiak/roho160_data/3_2017-01-15_to_2019-07-16_with_AKx_no_lakes/roho160_his_{i:03d}.nc'
+        )
+        print(f"File roho160_his_{i:03d}.nc saved")
+
+
 def split_list(input_list, num_splits):
     # Calculate the length of each sub-list
     sublist_length = len(input_list) // num_splits
@@ -125,15 +164,19 @@ if __name__ == "__main__":
     file_names = sorted(glob.glob(
         "/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/*his*.nc"
     ))[:50]
+    # file_names = sorted(glob.glob(
+    #     "/cluster/projects/nn9297k/shmiak/roho160_data/3_2017-01-15_to_2019-07-16_with_AKx_no_lakes/*his*.nc"
+    # ))[:50]
     file_names_splits = split_list(file_names, num_splits)
 
-    # ds_roho800_grid = xr.open_dataset('/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc')
-    # f(ds_roho800_grid, file_names)
+    def wrapper_erase_lakes(x):
+        ds_grid = xr.open_dataset("/cluster/projects/nn9297k/ROHO160+/InputData/Grid/roho_160m_sigma3_min20_no_lakes.nc")
+        g(ds_grid, x)
 
-    def wrapper(x):
-        ds_roho800_grid = xr.open_dataset('/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc')
-        f(ds_roho800_grid, x)
+    def wrapper_regrid(x):
+        ds_grid = xr.open_dataset('/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc')
+        f(ds_grid, x)
 
     # lambda cannot be pickled (python3.10)
     with Pool(processes=num_splits) as p:
-        p.map(wrapper, file_names_splits)
+        p.map(wrapper_erase_lakes, file_names_splits)
