@@ -38,7 +38,7 @@ def regrid(ds_grid, ds_data, parameter_name, lon_name, lat_name):
 def fit_grid(ds_grid, da, eta_name, xi_name, mask_name):
     da = da.interpolate_na(dim=eta_name, method="nearest", fill_value="extrapolate")
     da = da.interpolate_na(dim=xi_name, method="nearest", fill_value="extrapolate")
-    return ds_grid[mask_name] * da
+    return da  # ds_grid[mask_name] * da
 
 
 def fill_variables():
@@ -96,7 +96,9 @@ def f(ds_grid, file_names):
         ds_data = xr.open_dataset(file_name)
         ds_dict = {}
         for var in roms_variables:
-            da = regrid_fit(ds_grid, ds_data, var)
+            da = regrid_fit(ds_grid, ds_data, var).astype(np.float32)
+            # da =  da / ds_grid[var.mask_name].astype(np.float32)
+            # da.values[np.isinf(da.values)] = np.nan
             try:
                 da = da.transpose("ocean_time", var.s_name, var.eta_name, var.xi_name)
                 ds_dict[var.name] = (["ocean_time", var.s_name, var.eta_name, var.xi_name], da.values)
@@ -172,17 +174,17 @@ def split_list(input_list, num_splits):
 
 if __name__ == "__main__":
     # num splits defines the number of processes
-    num_splits = 2
+    num_splits = 5
 
     # memory limit: 2 processes max
-    file_names = sorted(glob.glob(
-        "/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/*his*.nc"
-    ))[:10]
+    # file_names = sorted(glob.glob(
+    #     "/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/*his*.nc"
+    # ))
 
     # memory limit: 5 processes max
-    # file_names = sorted(glob.glob(
-    #     "/cluster/projects/nn9297k/shmiak/roho160_data/3_2017-01-15_to_2019-07-16_with_AKx_no_lakes/*his*.nc"
-    # ))[:10]
+    file_names = sorted(glob.glob(
+        "/cluster/projects/nn9297k/shmiak/roho160_data/3_2017-01-15_to_2019-07-16_with_AKx_no_lakes/*his*.nc"
+    ))
 
     file_names_splits = split_list(file_names, num_splits)
 
@@ -196,4 +198,4 @@ if __name__ == "__main__":
 
     # lambda cannot be pickled (python3.10)
     with Pool(processes=num_splits) as p:
-        p.map(wrapper_erase_lakes, file_names_splits)
+        p.map(wrapper_regrid, file_names_splits)
