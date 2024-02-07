@@ -31,11 +31,13 @@ class RomsVariable:
 def regrid(ds_grid, ds_data, parameter_name, lon_name, lat_name):
     ds_grid = ds_grid.rename({lon_name: "lon", lat_name: "lat"})
     ds_data = ds_data.rename({lon_name: "lon", lat_name: "lat"})
-    regridder = xe.Regridder(ds_data, ds_grid, 'bilinear', unmapped_to_nan=True)
+    regridder = xe.Regridder(ds_data, ds_grid, 'nearest_s2d', extrap_method='nearest_s2d')
     return regridder(ds_data[parameter_name])
 
 
 def fit_grid(ds_grid, da, eta_name, xi_name, mask_name):
+    da = da.interpolate_na(dim=xi_name, method="linear")
+    da = da.interpolate_na(dim=eta_name, method="linear")
     da = da.interpolate_na(dim=eta_name, method="nearest", fill_value="extrapolate")
     da = da.interpolate_na(dim=xi_name, method="nearest", fill_value="extrapolate")
     return da  # ds_grid[mask_name] * da
