@@ -37,6 +37,7 @@ DAYS_1948_2019 = 25947
 
 PHYSPATH_BASE = "/cluster/projects/nn9297k/shmiak/roho800_data/output_data/forward/3_2017_01_15-2019_12_27"
 PHYSPATH_ORIGIN = "/cluster/projects/nn9297k/shmiak/roho800_data/interpolated_from_roho160_phys"
+STEP_DAYS = 1
 
 VARS_TO_UPDATE = (
     "AKs", "AKt", "AKv",
@@ -160,11 +161,17 @@ def run_roms(directory_path):
     config = os.path.join(directory_path, ROHO800IN)
     output = os.path.join(directory_path, "output.log")
     command = f"time mpirun {executable} {config} > {output}"
-    process = subprocess.Popen(command, cwd=directory_path, shell=True)
-    process.communicate()
+    for i in range(3):
+        process = subprocess.Popen(command, cwd=directory_path, shell=True)
+        return_code = process.wait()
+        if return_code == 0:
+            print(f"Process try#{i} return code is 0")
+            break
+        else:
+            print(f"Process try#{i} return cose is not 0.")
 
 
-def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
+def main(init_time_tuple, init_av_file_path, days_since_1948, physpath, step_days):
     # Stage 1: run ROMS from roho800original average output
     #
     # 1. create a folder for the first run, copy files to it :
@@ -198,7 +205,7 @@ def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
     directory_path = os.path.join(os.getcwd(), "1_iter")
     create_and_copy(directory_path, FILES)
 
-    time_cftime = time_cftime + timedelta(days=3)
+    time_cftime = time_cftime + timedelta(days=step_days)
     prev_roms_output = os.path.join(prev_dir_path, "roho800_his_0001.nc")
 
     create_init_gen = create_init(directory_path, prev_roms_output, time_cftime, physpath)
@@ -210,7 +217,7 @@ def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
         f"ININAME == {init_name}\n"
     )
 
-    days_since_1948 += 3
+    days_since_1948 += step_days
     change_the_line(
         os.path.join(directory_path, ROHO800IN),
         "DSTART =",
@@ -220,13 +227,13 @@ def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
     run_roms(directory_path)
 
     # Stage 3: stepping
-    for i in range(2, 50):
+    for i in range(2, 90):
         prev_dir_path = directory_path
 
         directory_path = os.path.join(os.getcwd(), f"{i}_iter")
         create_and_copy(directory_path, FILES)
 
-        time_cftime = time_cftime + timedelta(days=3)
+        time_cftime = time_cftime + timedelta(days=step_days)
         prev_roms_output = os.path.join(prev_dir_path, "roho800_his_0001.nc")
 
         init_name = create_init_gen.send((directory_path, prev_roms_output, time_cftime))
@@ -237,7 +244,7 @@ def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
             f"ININAME == {init_name}\n"
         )
 
-        days_since_1948 += 3
+        days_since_1948 += step_days
         change_the_line(
             os.path.join(directory_path, ROHO800IN),
             "DSTART =",
@@ -248,4 +255,5 @@ def main(init_time_tuple, init_av_file_path, days_since_1948, physpath):
 
 
 if __name__ == "__main__":
-    main(TIME2017, YEAR2017PATH, DAYS_1948_2017, PHYSPATH_ORIGIN)
+    main(TIME2019, YEAR2019PATH, DAYS_1948_2019, PHYSPATH_ORIGIN, STEP_DAYS)
+

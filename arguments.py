@@ -3,7 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class ArgumentsSpring2017:
     start_time: str = '2017-02-01'
-    end_time: str = '2017-02-07'
+    end_time: str = '2017-03-01'
     input_grid_file: str = '/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc'
     roho800orig_files: tuple = (
         '/cluster/projects/nn9490k/ROHO800/STORAGE/ROHO800_hindcast_2007_2019_v2bn/roho800_v2bn_his/roho800_his_0525.nc',
