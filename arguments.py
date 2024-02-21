@@ -11,7 +11,7 @@ def natural_sort(l):  # noqa: E741
 @dataclass
 class ArgumentsSpring2017:
     start_time: str = '2017-02-01'
-    end_time: str = '2017-04-01'
+    end_time: str = '2017-03-15'
     input_grid_file: str = '/cluster/projects/nn9490k/ROHO800/Grid/ROHO800_grid_fix5.nc'
     roho800orig_files: tuple = tuple(
         natural_sort(
@@ -38,10 +38,10 @@ class ArgumentsSpring2017:
             glob.glob('/cluster/projects/nn9297k/shmiak/roho800_data/output_data/orig_with_phys_from_roho160/2017_3_months/*_iter/roho800_his_0001.nc')
         )
     )
-    stations: str = '/cluster/projects/nn9297k/shmiak/roho160_data/1_2017-01-15_to_2019-07-16/roho160_sta.nc'
+    stations: str = '/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/roho160_sta.nc'
     wc13_obs_file: str = '/cluster/home/shmiak/src/roms-applications/WC13/Data/wc13_obs.nc'
     output_obs_file: \
-        str = '/cluster/projects/nn9297k/shmiak/roho800_data/input_data/obs_i4dvar_4st_temp_2017-02-01_to_2017-02-07.nc'
+        str = '/cluster/projects/nn9297k/shmiak/roho800_data/input_data/obs_i4dvar_4st_temp_2017-02-01_to_2017-03-15.nc'
 
 @dataclass
 class ArgumentsSpring2018:
