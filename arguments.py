@@ -40,8 +40,7 @@ class ArgumentsSpring2017:
     )
     stations: str = '/cluster/projects/nn9297k/shmiak/roho160_data/2_2017-01-15_to_2019-07-16_with_AKx/roho160_sta.nc'
     wc13_obs_file: str = '/cluster/home/shmiak/src/roms-applications/WC13/Data/wc13_obs.nc'
-    output_obs_file: \
-        str = '/cluster/projects/nn9297k/shmiak/roho800_data/input_data/obs_i4dvar_4st_temp_2017-02-01_to_2017-03-15.nc'
+    output_obs_file: str | None = None
 
 @dataclass
 class ArgumentsSpring2018:
