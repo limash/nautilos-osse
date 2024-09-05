@@ -42,6 +42,24 @@ class ArgumentsSpring2017:
             )
         )
     )
+    baseline_files_2017: tuple = tuple(
+        [
+            os.path.join(Path.home(), x)
+            for x in [
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/5_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/6_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/7_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/8_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/9_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/10_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/11_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/12_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/13_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/14_iter/roho800_his_0001.nc",
+                "fram/roho800_data/output_data/orig_with_phys_from_forward/y2017/15_iter/roho800_his_0001.nc",
+            ]
+        ]
+    )
     nature_files: tuple = tuple(
         natural_sort(
             glob.glob(
